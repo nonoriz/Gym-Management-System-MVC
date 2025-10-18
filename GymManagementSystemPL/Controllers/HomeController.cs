@@ -14,7 +14,7 @@ namespace GymManagementSystemPL.Controllers
         public ViewResult Index()
         {
             var Data = analyticsService.GetAnalyticsData();
-            return View();
+            return View(Data);
         }
 
         //public RedirectResult Redirect()

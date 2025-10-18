@@ -13,71 +13,143 @@ using System.Threading.Tasks;
 
 namespace GymManagementSystemBLL
 {
-    public class MappingProfiles: Profile
+    public class MappingProfiles : Profile
     {
-        public MappingProfiles() 
+        public MappingProfiles()
         {
             #region Sessions
-            CreateMap<Session, SessionViewModel>()
-                   .ForMember(dest => dest.CategoryName, Options => Options.MapFrom(src => src.Category.CategoryName))
-                   .ForMember(dest => dest.TrainerName, Options => Options.MapFrom(src => src.Trainer.Name))
-                   .ForMember(dest => dest.AvailableSlots, Options => Options.Ignore());
-
-            CreateMap<CreateSessionViewModel, Session>();
-            CreateMap<UpdateSessionViewModel, Session>().ReverseMap();
+            MapSessions();
             #endregion
 
 
             #region Trainers
-            CreateMap<Trainer, TrainerViewModel>()
-                   .ForMember(dest => dest.Address,
-                   Options => Options.MapFrom(
-                       src => src.Address.BuildingNumber + "." + src.Address.Street + "." + src.Address.City));
-
-            CreateMap<CreateSessionViewModel, Trainer>();
-            CreateMap<TrainerToUpdateViewModel, Trainer>().ReverseMap();
+            MapTrainers();
 
             #endregion
 
             #region Members
-            CreateMap<Member, MemberViewModel>()
-                   .ForMember(dest => dest.Address,
-                   Options => Options.MapFrom(
-                       src => src.Address.BuildingNumber + "-" + src.Address.Street + "-" + src.Address.City));
-
-            CreateMap<CreateMemberViewModel, Member>()
-                .ForMember(dest => dest.Address.BuildingNumber, Options => Options.MapFrom(src => src.BuildingNumber))
-                .ForMember(dest => dest.Address.Street, Options => Options.MapFrom(src => src.Street)).
-                ForMember(dest => dest.Address.City, Options => Options.MapFrom(src => src.City))
-                .ForMember(dest => dest.HealthRecord.Weight, Options => Options.MapFrom(src => src.HealthRecordViewModel.Weight))
-                .ForMember(dest => dest.HealthRecord.Height, Options => Options.MapFrom(src => src.HealthRecordViewModel.Height))
-                .ForMember(dest => dest.HealthRecord.BloodType, Options => Options.MapFrom(src => src.HealthRecordViewModel.BloodType))
-                .ForMember(dest => dest.HealthRecord.Note, Options => Options.MapFrom(src => src.HealthRecordViewModel.Note));
-
-            CreateMap<HealthRecord, HealthRecord>();
-
-            CreateMap<MemberToUpdateViewModel, Member>()
-                .ForMember(dest => dest.Address.BuildingNumber, Options => Options.MapFrom(src => src.BuildingNumber))
-                .ForMember(dest => dest.Address.Street, Options => Options.MapFrom(src => src.Street)).
-                ForMember(dest => dest.Address.City, Options => Options.MapFrom(src => src.City))
-                .ReverseMap();
-
+           
+            MapMembers();
 
 
             #endregion
 
 
             #region Plans
-            CreateMap<Plan, PlanViewModel>();
-            CreateMap<UpdatePlanViewModel, Plan>().ReverseMap();
-
-
+           
+            MapPlans();
 
             #endregion
 
 
         }
+        private void MapSessions()
+        {
+            CreateMap<Session, SessionViewModel>()
+                 .ForMember(dest => dest.CategoryName, Options => Options.MapFrom(src => src.Category.CategoryName))
+                 .ForMember(dest => dest.TrainerName, Options => Options.MapFrom(src => src.Trainer.Name))
+                 .ForMember(dest => dest.AvailableSlots, Options => Options.Ignore());
 
-       
+            CreateMap<CreateSessionViewModel, Session>();
+            CreateMap<UpdateSessionViewModel, Session>().ReverseMap();
+
+        }
+
+        private void MapTrainers()
+        {
+            CreateMap<Trainer, TrainerViewModel>()
+                .ForMember(dest=>dest.Phone,Options=>Options.MapFrom(src=>src.PhoneNumber))
+                .ForMember(dest=>dest.DateOfBirth,Options=>Options.MapFrom(src=>src.DateOfBirth.ToShortDateString()))
+                .ForMember(dest=>dest.Specialization,Options=>Options.MapFrom(src=>src.Specialties.ToString()))
+                  .ForMember(dest => dest.Address,
+                  Options => Options.MapFrom(
+                      src => $"{src.Address.BuildingNumber} . {src.Address.Street} . {src.Address.City}"));
+
+            CreateMap<CreateTrainerViewModel, Trainer>()
+                .ForMember(dest=>dest.PhoneNumber,Options=>Options.MapFrom(src=>src.Phone))
+                .ForMember(dest=>dest.Address,Options=>Options.MapFrom(src=> new Address()
+                {
+                    BuildingNumber=src.BuildingNumber,
+                    Street=src.Street,
+                    City=src.City
+                }));
+            CreateMap<Trainer, TrainerToUpdateViewModel>()
+                .ForMember(dest=>dest.Specialization,Options=>Options.MapFrom(src=>src.Specialties))
+                .ForMember(dest => dest.BuildingNumber, Options => Options.MapFrom(src => src.Address.BuildingNumber))
+                .ForMember(dest => dest.Street, Options => Options.MapFrom(src => src.Address.Street))
+                .ForMember(dest => dest.City, Options => Options.MapFrom(src => src.Address.City));
+
+            CreateMap<TrainerToUpdateViewModel, Trainer>()
+                .ForMember(dest => dest.Name, Options => Options.Ignore())
+                .ForMember(dest=>dest.Specialties,Options=>Options.MapFrom(src=>src.Specialization))
+                .AfterMap((src, dest) =>
+                {
+                    dest.Address.BuildingNumber = src.BuildingNumber;
+                    dest.Address.Street = src.Street;
+                    dest.Address.City = src.City;
+                    dest.UpdatedAt = DateTime.Now;
+                });
+
+        }
+
+        private void MapMembers()
+        {
+            CreateMap<Member, MemberViewModel>()
+                .ForMember(dest=>dest.Gender,Options=>Options.MapFrom(src=>src.Gender.ToString()))
+                .ForMember(dest=>dest.Gender,Options=>Options.MapFrom(src=>src.DateOfBirth.ToShortDateString()))
+                 .ForMember(dest => dest.Address,
+                  Options => Options.MapFrom(
+                      src => $"{src.Address.BuildingNumber} - {src.Address.Street} - {src.Address.City}"));
+
+
+           
+                 
+
+            CreateMap<CreateMemberViewModel, Member>()
+                .ForMember(dest => dest.Address, Options => Options.MapFrom(src => new Address()
+                {
+                    BuildingNumber = src.BuildingNumber,
+                    Street = src.Street,
+                    City = src.City
+
+                })) 
+                .ForMember(dest => dest.HealthRecord, Options => Options.MapFrom(src =>src.HealthRecordViewModel));
+
+
+
+            CreateMap<HealthRecordViewModel, HealthRecord>()
+                .ForMember(dest=>dest.Height, Options=>Options.MapFrom(src=>src.Height))
+                .ForMember(dest => dest.Weight, Options => Options.MapFrom(src => src.Weight))
+                .ForMember(dest => dest.BloodType, Options => Options.MapFrom(src => src.BloodType))
+                .ForMember(dest => dest.Note, Options => Options.MapFrom(src => src.Note))
+                .ReverseMap();
+
+         
+            CreateMap<Member, MemberToUpdateViewModel>()
+                .ForMember(dest => dest.BuildingNumber, Options => Options.MapFrom(src => src.Address.BuildingNumber))
+                .ForMember(dest => dest.Street, Options => Options.MapFrom(src => src.Address.Street))
+                .ForMember(dest => dest.City, Options => Options.MapFrom(src => src.Address.City));
+
+            CreateMap<MemberToUpdateViewModel, Member>()
+                .ForMember(dest => dest.Name, Options => Options.Ignore())
+                .ForMember(dest => dest.Photo, Options => Options.Ignore())
+                .AfterMap((src, dest) =>
+                {
+                    dest.Address.BuildingNumber = src.BuildingNumber;
+                    dest.Address.Street = src.Street;
+                    dest.Address.City = src.City;
+                    dest.UpdatedAt = DateTime.Now;
+                });
+        }
+
+        private void MapPlans()
+        {
+            CreateMap<Plan, PlanViewModel>()
+                .ForMember(dest => dest.PlanName, Options => Options.MapFrom(src => src.Name));
+            CreateMap<UpdatePlanViewModel, Plan>()
+                .ForMember(dest => dest.Name, Options => Options.Ignore())
+                .ForMember(dest => dest.UpdatedAt, Options => Options.MapFrom(src => DateTime.Now));
+
+        }
     }
 }
