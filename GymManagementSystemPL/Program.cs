@@ -35,6 +35,8 @@ namespace GymManagementSystemUL
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<ITrainerService,TrainerService>();
+            builder.Services.AddScoped<IPanService, PlanService>();
+            builder.Services.AddScoped<ISessionService, SessionService>();
 
 
 

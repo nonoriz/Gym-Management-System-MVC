@@ -11,7 +11,7 @@ using AutoMapper;
 
 namespace GymManagementSystemBLL.Services.Classes
 {
-    internal class PlanService : IPanService
+    public class PlanService : IPanService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;

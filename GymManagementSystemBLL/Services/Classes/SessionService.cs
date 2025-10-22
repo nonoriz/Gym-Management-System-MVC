@@ -113,6 +113,23 @@ namespace GymManagementSystemBLL.Services.Classes
 
         }
 
+        public IEnumerable<TrainerSelectViewModel> GetTrainerForDropDown()
+        {
+           var trainers= unitOfWork.GetRepository<Trainer>().GetAll();
+            if (!trainers.Any()) return [];
+            var MappedTrainers = mapper.Map<IEnumerable<Trainer>, IEnumerable<TrainerSelectViewModel>>(trainers);
+            return MappedTrainers;
+        }
+
+        public IEnumerable<CategorySelectViewModel> GetCategoryForDropDown()
+        {
+           var categories= unitOfWork.GetRepository<Category>().GetAll();
+            if (!categories.Any()) return [];
+            var MappedCategories = mapper.Map<IEnumerable<Category>, IEnumerable<CategorySelectViewModel>>(categories);
+            return MappedCategories;
+        }
+
+
 
 
         #region Helper Methods
@@ -159,10 +176,11 @@ namespace GymManagementSystemBLL.Services.Classes
         }
         private bool IsDateTimeValid(DateTime startDate, DateTime endDate)
         {
-            return startDate < endDate;
+            return startDate < endDate && DateTime.Now <startDate;
         }
 
-      
+       
+
 
 
 
