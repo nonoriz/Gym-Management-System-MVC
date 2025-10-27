@@ -9,7 +9,7 @@ namespace GymManagementSystemDAL.Repositories.Interfaces
 {
     public interface ISessionRepository : IGenericRepository<Session>
     {
-        IEnumerable<Session> GetAllSessionsWithTrainerAndCategory();
+        IEnumerable<Session> GetAllSessionsWithTrainerAndCategory(Func<Session, bool>? condition = null);
 
         int GetCountOfBookedSlots(int SessionId);
 

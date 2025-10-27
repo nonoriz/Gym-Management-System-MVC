@@ -39,6 +39,10 @@ namespace GymManagementSystemDAL.Repositories.Classes
                 return dbContext.Set<TEntity>().AsNoTracking().Where(condition).ToList();
 
         }
+        public bool Exists(Func<TEntity, bool> predicate)
+        {
+            return dbContext.Set<TEntity>().Any(predicate);
+        }
 
 
         public TEntity? GetById(int id)

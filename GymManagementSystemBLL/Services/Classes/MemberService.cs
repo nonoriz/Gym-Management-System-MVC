@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymManagementSystemBLL.Services.AttachmentService;
 using GymManagementSystemBLL.Services.Interfaces;
 using GymManagementSystemBLL.ViewModels.MemberViewModels;
 using GymManagementSystemDAL.Models;
@@ -15,11 +16,13 @@ namespace GymManagementSystemBLL.Services.Classes
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper   mapper;
+        private readonly IAttachmentService attachmentService;
 
-        public MemberService(IUnitOfWork unitOfWork,IMapper mapper)
+        public MemberService(IUnitOfWork unitOfWork,IMapper mapper,IAttachmentService attachmentService)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.attachmentService = attachmentService;
         }
 
         
@@ -31,9 +34,19 @@ namespace GymManagementSystemBLL.Services.Classes
                 if (IsEmailExists(CreatedModel.Email) || IsPhoneExists(CreatedModel.Phone)) return false;
 
                 var member=mapper.Map<CreateMemberViewModel,Member>(CreatedModel);
+                var photoName= attachmentService.Upload("members", CreatedModel.PhotoFile);
+                if(string.IsNullOrEmpty(photoName)) return false;
 
-                 unitOfWork.GetRepository<Member>().Add(member) ;
-                return unitOfWork.SaveChanges() >0;
+                member.Photo= photoName;
+
+                unitOfWork.GetRepository<Member>().Add(member) ;
+               var isCreated=unitOfWork.SaveChanges() >0;
+                if (!isCreated) 
+                {
+                    attachmentService.Delete(photoName, "members");
+                    return false;
+                }
+                return isCreated;
 
             }
             catch (Exception)
@@ -64,7 +77,12 @@ namespace GymManagementSystemBLL.Services.Classes
                     }
                 }
                 unitOfWork.GetRepository<Member>().Delete(member);
-                return unitOfWork.SaveChanges()>0;
+                var isDeleted= unitOfWork.SaveChanges()>0;
+                if (isDeleted)
+                {
+                    attachmentService.Delete(member.Photo, "members");
+                }
+                return isDeleted;
             }
             catch (Exception) { return false; }
 

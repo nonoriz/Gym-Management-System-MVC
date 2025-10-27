@@ -1,9 +1,11 @@
 ﻿using GymManagementSystemBLL.Services.Interfaces;
 using GymManagementSystemBLL.ViewModels.MemberViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementSystemPL.Controllers
 {
+    [Authorize(Roles = "SuperAdmin")]
     public class MemberController : Controller
     {
         private readonly IMemberService memberService;
@@ -39,7 +41,7 @@ namespace GymManagementSystemPL.Controllers
             return View(Member);
         }
 
-        public ActionResult HealthRecordDeatails(int id)
+        public ActionResult HealthRecordDetails(int id)
         {
             if (id <= 0)
             {
@@ -49,7 +51,7 @@ namespace GymManagementSystemPL.Controllers
             var healthRecord=memberService.GetMemberHealthRecordDetails(id);
             if (healthRecord is null)
             {
-                TempData["ErrorMrssage"] = "Health Record Nor Found";
+                TempData["ErrorMrssage"] = "Health Record Not Found";
                 return RedirectToAction(nameof(Index));
             }
             return View(healthRecord);
@@ -66,7 +68,7 @@ namespace GymManagementSystemPL.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMmeber(CreateMemberViewModel createdMember)
+        public ActionResult CreateMember(CreateMemberViewModel createdMember)
         {
             if (!ModelState.IsValid)
             {
