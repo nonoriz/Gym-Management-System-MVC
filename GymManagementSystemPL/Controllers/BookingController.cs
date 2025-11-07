@@ -26,6 +26,8 @@ namespace GymManagementSystemPL.Controllers
             var Members = bookingService.GetMembersForUpcomingBySessionId(id);
             return View(Members);
         }
+
+
         #region Create 
         public ActionResult Create(int id)
         {

@@ -29,7 +29,7 @@ else if (TempData["ErrorMessage"] != null)
             <p class="mb-0 text-light opacity-75">Members That Already Book Session</p>
         </div>
         <div class="text-end">
-            <a href="membersession/Create/sessionId" class="btn btn-light">
+            <a asp-action="Create" asp-route-id="@(Model.FirstOrDefault()?.SessionId)" class="btn btn-light">
                 <i class="fas fa-plus me-1"></i> New Booking
             </a>
         </div>

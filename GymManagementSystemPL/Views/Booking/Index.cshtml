@@ -51,7 +51,7 @@
                         </div>
                         <div class="card-footer bg-white border-0">
                             <div class="d-grid gap-2">
-                                <a href="MemberSession/GetMembersForUpcomingSession/sessionId" class="btn btn-outline btn-sm">
+                                <a asp-controller="Booking" asp-action="GetMembersForUpcomingSession" asp-route-id="@session.Id" class="btn btn-outline btn-sm">
                                     <i class="bi bi-eye me-1"></i> View Members
                                 </a>
                             </div>
@@ -109,7 +109,7 @@
                         </div>
                         <div class="card-footer bg-white border-0">
                             <div class="d-grid gap-2">
-                                <a href="MemberSession/GetMembersForOngoingSessions/sessionId" class="btn btn-outline btn-sm">
+                                <a asp-controller="Booking" asp-action="GetMembersForOngoingSessions" asp-route-id="@session.Id" class="btn btn-outline btn-sm">
                                     <i class="bi bi-eye me-1"></i> View Members
                                 </a>
                             </div>

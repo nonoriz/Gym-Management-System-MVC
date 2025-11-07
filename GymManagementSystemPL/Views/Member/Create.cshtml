@@ -49,38 +49,6 @@
                     <span asp-validation-for="PhotoFile" class="text-danger"></span>
                     <small class="form-text text-muted">Max size: 5 MB. Allowed types: JPG, PNG (Required)</small>
                 </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">Name</label>
-                    <input name="Name" type="text" class="form-control" />
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">Email</label>
-                    <input name="Email" type="text" class="form-control" />
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">Phone</label>
-                    <input name="Phone" type="text" class="form-control" />
-                </div>
-                <div class="col-12 col-md-6">
-                    <label class="form-label">DateOfBirth</label>
-                    <input name="DateOfBirth" class="form-control" type="date" />
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">Gender</label>
-                    <select name="Gender" class="form-select">
-                        <option value="">-- Select Gender --</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <div class="row g-3">
                 <div class="col-12 col-md-6">
                     <label asp-for="Name" class="form-label"></label>
                     <input asp-for="Name" type="text" class="form-control" />
@@ -112,7 +80,10 @@
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
 
+             
             </div>
+
+           
             <div class="section-header mb-3 mt-4">
                 <h5 class="text-primary fw-bold">Address Information</h5>
                 <hr class="mt-2">
